@@ -3,8 +3,8 @@ name: Build updated apache httpd
 on:
   push:
     paths:
-      - 'build-httpd.yml'
-      - 'vars.yml'
+      - './build-httpd.yml'
+      - './vars.yml'
 
 jobs:
   build:
