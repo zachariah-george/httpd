@@ -1,4 +1,4 @@
-name: Update Vars.yml
+name: Update vars.yml file
 
 on:
   push:
