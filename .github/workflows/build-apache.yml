@@ -1,9 +1,10 @@
-name: Ansible Playbook Run
+name: Build updated apache httpd
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - 'build-httpd.yml'
+      - 'vars.yml'
 
 jobs:
   build:
