@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - '**.py'
-      - '.github/workflows/update-vars.yml'
-      - './vars.yml'
+#       - '.github/workflows/update-vars.yml'
+      - 'vars.yml'
 
 jobs:
   build:
