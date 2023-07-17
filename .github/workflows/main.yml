@@ -32,6 +32,9 @@ jobs:
         name: httpd-artifacts
         path: ./tmp/httpd/
 
+    - name: Compress httpd directory
+      run: zip -r httpd.zip ./tmp/httpd
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -50,6 +53,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./tmp/httpd/
-        asset_name: httpd
-        asset_content_type: application/octet-stream
+        asset_path: ./httpd.zip
+        asset_name: httpd.zip
+        asset_content_type: application/zip
