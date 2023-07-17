@@ -33,7 +33,14 @@ jobs:
         path: ./tmp/httpd/
 
     - name: Compress httpd directory
-      run: zip -r httpd.zip ./tmp/httpd
+      run: |
+        cd ./tmp/httpd
+        zip -r ../../httpd.zip .
+     
+    - name: Extract httpd_version from vars.yml
+      id: vars
+      run: |
+        echo "::set-output name=version::$(python -c "import yaml;print(yaml.safe_load(open('vars.yml'))['httpd_version'])")"
 
     - name: Create Release
       id: create_release
@@ -41,8 +48,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: latest1
-        release_name: Latest Release1
+        tag_name: latest
+        release_name: Latest Release
         draft: false
         prerelease: false
 
