@@ -24,4 +24,4 @@ jobs:
         pip install ansible
 
     - name: Run Ansible playbook
-      run: ansible-playbook build-httpd.yml --connection=local
+      run: ansible-playbook build-httpd.yml --connection=local --extra-vars '@vars.yml'
