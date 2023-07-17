@@ -48,8 +48,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: latest
-        release_name: Latest Release
+        tag_name: ${{ steps.vars.outputs.version }}
+        release_name: Release ${{ steps.vars.outputs.version }}
         draft: false
         prerelease: false
 
