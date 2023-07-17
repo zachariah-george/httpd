@@ -71,7 +71,7 @@
 
     - name: Find ApacheXX path
       find:
-        paths: /home/zacg/ansible/tmp/
+        paths: ./tmp/
         patterns: ABOUT_APACHE.txt
         file_type: file
         recurse: yes
@@ -79,7 +79,7 @@
 
     - name: Find Apache directory
       find:
-        paths: /home/zacg/ansible/tmp/httpd/
+        paths: ./tmp/httpd/
         patterns: "Apache*"
         file_type: directory
       register: apache_directory
