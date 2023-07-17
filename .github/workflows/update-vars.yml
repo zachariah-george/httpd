@@ -1,0 +1,33 @@
+name: Update Vars
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-vars:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x  # Replace with the desired Python version
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt  # If you have any requirements, add them to the requirements.txt file
+
+      - name: Run updateVars.py
+        run: python updateVars.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add vars.yml
+          git commit -m "Update vars.yml"
+          git push
