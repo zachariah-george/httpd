@@ -28,7 +28,7 @@ jobs:
     - name: Run updateVars.py
       run: python updateVars.py
 
-    - name: Commit and push if it changed
+    - name: Commit and push if vars.yml is modified
       run: |
         git diff
         git config --global user.email "action@github.com"
