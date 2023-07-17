@@ -1,33 +1,37 @@
-name: Update Vars
+name: Update vars.yml
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - '**.py'
+      - '.github/workflows/update-vars.yml'
 
 jobs:
-  update-vars:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # this is required to get the full history and be able to push
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x  # Replace with the desired Python version
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt  # If you have any requirements, add them to the requirements.txt file
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Run updateVars.py
-        run: python updateVars.py
+    - name: Run updateVars.py
+      run: python updateVars.py
 
-      - name: Commit and push changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add vars.yml
-          git commit -m "Update vars.yml"
-          git push
+    - name: Commit and push if it changed
+      run: |
+        git diff
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        git commit -am "Update vars.yml" || exit 0
+        git push
