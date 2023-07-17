@@ -18,8 +18,9 @@ jobs:
     - name: Check for changes in vars.yml
       id: check
       run: |
-        git diff --exit-code -- ./vars.yml && echo "No changes in vars.yml" || echo "::set-output name=changed::true"
-
+        if git log -1 --name-only --pretty=format: | grep -q "vars.yml"; then
+          echo "::set-output name=changed::true"
+        fi
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
