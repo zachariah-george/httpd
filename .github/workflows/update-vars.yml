@@ -1,6 +1,8 @@
 name: Update vars.yml file
 
 on:
+  schedule:
+    - cron: '0 0 * * *'
   push:
     paths:
       - '**.py'
