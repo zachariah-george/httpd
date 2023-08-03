@@ -154,6 +154,9 @@
           ServerSignature Off
           ServerTokens Prod
 
+          # Additional Headerrs
+          Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
     - name: Update SecRuleEngine in modsecurity.conf
       lineinfile:
         path: "{{ httpd_conf_dir }}/extra/modsecurity.conf"
