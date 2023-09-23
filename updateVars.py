@@ -18,12 +18,13 @@ def get_version_number(soup, keyword):
     return version
 
 
-def update_vars_file(httpd_version, mod_security_version, crs_version):
+def update_vars_file(httpd_version, mod_security_version, mod_log_rotate_version, crs_version):
     with open(ANSIBLE_VARS_FILE, 'r') as file:
         data = yaml.safe_load(file)
         data['httpd_version'] = httpd_version
         data['mod_security_version'] = mod_security_version
         data['crs_version'] = crs_version
+        data['mod_log_rotate_version'] = mod_log_rotate_version
 
     with open(ANSIBLE_VARS_FILE, 'w') as file:
         yaml.dump(data, file)
@@ -38,10 +39,12 @@ try:
         httpd_link = soup.find('a', href=lambda href: href and 'httpd' in href and href.endswith('.zip'))
         httpd_version = get_version_number(soup, 'httpd')
         mod_security_version = get_version_number(soup, 'mod_security')
+        mod_log_rotate_version = get_version_number(soup, 'mod_log_rotate')
         vs_version = httpd_link['href'].split('-')[-1].split('.')[0][2:]
 
         print(f"Apache HTTP Server version: {httpd_version}")
         print(f"ModSecurity version: {mod_security_version}")
+        print(f"ModLogRotate version: {mod_log_rotate_version}")
         print(f"Visual Studio version: {vs_version}")
 
         response = session.get(CRS_REPO_URL)
