@@ -54,7 +54,7 @@ try:
         crs_version = crs_version.replace('v', '')
         print("OWASP crs version:", crs_version)
 
-        update_vars_file(httpd_version, mod_security_version, crs_version)
+        update_vars_file(httpd_version, mod_security_version, mod_log_rotate_version, crs_version)
 
         # Not needed with Actions
         # playbook_path = "/home/zacg/ansible/build-httpd.yml"
