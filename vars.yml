@@ -15,12 +15,12 @@ httpd_extract_dest: ./tmp/httpd
 httpd_rules_dest: '{{ httpd_conf_dir }}/extra/rules/'
 httpd_sites_enabled_dir: '{{ httpd_conf_dir }}/sites-enabled'
 httpd_version: 2.4.57
-mod_log_rotate_version: 1.0.2
 mod_log_rotate_download_dest: ./tmp/mod_log_rotate.zip
 mod_log_rotate_download_url: https://www.apachelounge.com/download/{{ visual_studio_version
   }}/modules/mod_log_rotate-{{ mod_log_rotate_version }}-win64-{{ visual_studio_version
   }}.zip
 mod_log_rotate_extract_dest: ./tmp/mod_log_rotate
+mod_log_rotate_version: 1.0.2
 mod_security_download_dest: ./tmp/mod_security.zip
 mod_security_download_url: https://www.apachelounge.com/download/{{ visual_studio_version
   }}/modules/mod_security-{{ mod_security_version }}-win64-{{ visual_studio_version
