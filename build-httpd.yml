@@ -2,31 +2,31 @@
 - name: Build apache httpd archive integrated with mod_security and owasp coreruleset
   hosts: localhost
   gather_facts: false
-    # vars_files:
-    # - vars.yml
-  vars:
-      crs_download_dest: "./tmp/coreruleset.zip"
-      crs_download_url: "https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ crs_version }}.zip"
-      crs_extract_dest: "./tmp/coreruleset"
-      crs_rules_dir: "{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/rules/"
-      crs_setup_conf_dest: "{{ httpd_conf_dir }}/extra/crs-setup.conf"
-      crs_setup_conf_example: "{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/crs-setup.conf.example"
-      crs_version: "3.3.4"
-      httpd_certs_dir: "{{ httpd_conf_dir }}/certs"
-      httpd_conf_dir: "{{ httpd_directory }}/conf"
-      httpd_download_dest: "./tmp/httpd.zip"
-      httpd_download_url: "https://www.apachelounge.com/download/{{ visual_studio_version }}/binaries/httpd-{{ httpd_version }}-win64-{{ visual_studio_version }}.zip"
-      httpd_extract_dest: "./tmp/httpd"
-      httpd_rules_dest: "{{ httpd_conf_dir }}/extra/rules/"
-      httpd_sites_enabled_dir: "{{ httpd_conf_dir }}/sites-enabled"
-      httpd_version: "2.4.57"
-      mod_security_download_dest: "./tmp/mod_security.zip"
-      mod_security_download_url: "https://www.apachelounge.com/download/{{ visual_studio_version }}/modules/mod_security-{{ mod_security_version }}-win64-{{ visual_studio_version }}.zip"
-      mod_security_extract_dest: "./tmp/mod_security"
-      mod_security_version: "2.9.7"
-      unicode_mapping_dest: "{{ httpd_extract_dest }}/Apache24/conf/extra/unicode.mapping"
-      unicode_mapping_url: "https://github.com/SpiderLabs/ModSecurity/raw/v3/master/unicode.mapping"
-      visual_studio_version: "VS17"
+    vars_files:
+    - vars.yml
+  # vars:
+  #     crs_download_dest: "./tmp/coreruleset.zip"
+  #     crs_download_url: "https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ crs_version }}.zip"
+  #     crs_extract_dest: "./tmp/coreruleset"
+  #     crs_rules_dir: "{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/rules/"
+  #     crs_setup_conf_dest: "{{ httpd_conf_dir }}/extra/crs-setup.conf"
+  #     crs_setup_conf_example: "{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/crs-setup.conf.example"
+  #     crs_version: "3.3.4"
+  #     httpd_certs_dir: "{{ httpd_conf_dir }}/certs"
+  #     httpd_conf_dir: "{{ httpd_directory }}/conf"
+  #     httpd_download_dest: "./tmp/httpd.zip"
+  #     httpd_download_url: "https://www.apachelounge.com/download/{{ visual_studio_version }}/binaries/httpd-{{ httpd_version }}-win64-{{ visual_studio_version }}.zip"
+  #     httpd_extract_dest: "./tmp/httpd"
+  #     httpd_rules_dest: "{{ httpd_conf_dir }}/extra/rules/"
+  #     httpd_sites_enabled_dir: "{{ httpd_conf_dir }}/sites-enabled"
+  #     httpd_version: "2.4.57"
+  #     mod_security_download_dest: "./tmp/mod_security.zip"
+  #     mod_security_download_url: "https://www.apachelounge.com/download/{{ visual_studio_version }}/modules/mod_security-{{ mod_security_version }}-win64-{{ visual_studio_version }}.zip"
+  #     mod_security_extract_dest: "./tmp/mod_security"
+  #     mod_security_version: "2.9.7"
+  #     unicode_mapping_dest: "{{ httpd_extract_dest }}/Apache24/conf/extra/unicode.mapping"
+  #     unicode_mapping_url: "https://github.com/SpiderLabs/ModSecurity/raw/v3/master/unicode.mapping"
+  #     visual_studio_version: "VS17"
 
   tasks:
     - name: Install required packages
