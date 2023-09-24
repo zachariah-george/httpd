@@ -104,7 +104,7 @@
       command: "cp {{ mod_security_extract_dest }}/mod_security-{{ mod_security_version }}/yajl.dll {{ httpd_directory }}/bin/"
 
     - name: Copy mod_log_rotate.so to Apache modules directory
-      command: "cp {{ mod_log_rotate_extract_dest }}/mod_log_rotate-{{ mod_log_rotate_version }}/mod_log_rotate.so {{ httpd_directory }}/modules/"
+      command: "cp {{ mod_log_rotate_extract_dest }}/mod_log_rotate.so {{ httpd_directory }}/modules/"
 
     - name: Download unicode.mapping file
       shell: "curl -o {{ unicode_mapping_dest }} {{ unicode_mapping_url }}"
