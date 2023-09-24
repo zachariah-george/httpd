@@ -2,8 +2,7 @@
 - name: Build apache httpd archive integrated with mod_security and owasp coreruleset
   hosts: localhost
   gather_facts: false
-    vars_files:
-    - vars.yml
+    vars_files: vars.yml
   # vars:
   #     crs_download_dest: "./tmp/coreruleset.zip"
   #     crs_download_url: "https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ crs_version }}.zip"
