@@ -241,6 +241,22 @@
           # Disable proxy request handling
           ProxyRequests Off
 
+          # To bypass the modsec rule which checks that the host header is not an IP address
+          SecRule REQUEST_HEADERS:Host "@rx ^[\d.:]+$" \
+            "id:998,\
+            phase:2,\
+            nolog,\
+            pass,\
+            ctl:ruleRemoveById=920350"
+
+          # To bypass the modsec rule which checks for SQL injection, when password is a argument in the request
+          # Temporary fix till SQL injection is fixed in the application
+          SecRule ARGS_NAMES "@streq password" \
+            "id:999,\
+            phase:2,\
+            nolog,\
+            pass,\
+            ctl:ruleRemoveById=942100"
 
     - name: Update SecRuleEngine in modsecurity.conf
       lineinfile:
