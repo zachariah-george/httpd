@@ -21,6 +21,15 @@ jobs:
         if git log -1 --name-only --pretty=format: | grep -q "vars.yml"; then
           echo "::set-output name=changed::true"
         fi
+    - name: Cache Python dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+      if: steps.check.outputs.changed == 'true'
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
