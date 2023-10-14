@@ -53,7 +53,7 @@ try:
 
         httpd_file_name = f"httpd-{httpd_version}-win64-{vs_version}.zip"
         httpd_checksum_link = f'https://www.apachelounge.com/download/{vs_version}/binaries/{httpd_file_name}.txt'
-        httpd_checksum = get_checksum(httpd_checksum_link,httpd_file_name)
+        httpd_checksum = get_checksum('https://www.apachelounge.com/download/VS17/binaries/httpd-2.4.57-win64-VS17.zip.txt','httpd-2.4.57-win64-VS17.zip')
 
         print(f"Apache HTTP Server version: {httpd_version}")
         print(f"ModSecurity version: {mod_security_version}")
