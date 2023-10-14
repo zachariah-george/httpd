@@ -1,5 +1,5 @@
 import os
-
+import re
 import requests
 import yaml
 from bs4 import BeautifulSoup
@@ -17,11 +17,19 @@ def get_version_number(soup, keyword):
     version = link['href'].split('-')[1].split('-')[0]
     return version
 
+def get_checksum(file_url, keyword):
+    response = requests.get(file_url)
+    text = response.text
+    pattern = re.compile(fr'SHA1-Checksum for: {keyword}:\n([0-9A-Fa-f]+)', re.M)
+    match = pattern.search(text)
+    return match.group(1)
 
-def update_vars_file(httpd_version, mod_security_version, mod_log_rotate_version, crs_version):
+
+def update_vars_file(httpd_version, httpd_checksum, mod_security_version, mod_log_rotate_version, crs_version):
     with open(ANSIBLE_VARS_FILE, 'r') as file:
         data = yaml.safe_load(file)
         data['httpd_version'] = httpd_version
+        data['httpd_checksum'] = httpd_checksum
         data['mod_security_version'] = mod_security_version
         data['crs_version'] = crs_version
         data['mod_log_rotate_version'] = mod_log_rotate_version
@@ -38,6 +46,9 @@ try:
 
         httpd_link = soup.find('a', href=lambda href: href and 'httpd' in href and href.endswith('.zip'))
         httpd_version = get_version_number(soup, 'httpd')
+        httpd_file_name = "httpd-"+{httpd_version}+"-win64-"+{visual_studio_version}+".zip"
+        httpd_checksum_link = 'https://www.apachelounge.com/download/'+{visual_studio_version}+'/binaries/'+{httpd_file_name}+'.txt'
+        httpd_checksum = get_checksum(httpd_checksum_link,httpd_file_name)
         mod_security_version = get_version_number(soup, 'mod_security')
         mod_log_rotate_version = get_version_number(soup, 'mod_log_rotate')
         vs_version = httpd_link['href'].split('-')[-1].split('.')[0][2:]
@@ -54,7 +65,7 @@ try:
         crs_version = crs_version.replace('v', '')
         print("OWASP crs version:", crs_version)
 
-        update_vars_file(httpd_version, mod_security_version, mod_log_rotate_version, crs_version)
+        update_vars_file(httpd_version, httpd_checksum, mod_security_version, mod_log_rotate_version, crs_version)
 
         # Not needed with Actions
         # playbook_path = "/home/zacg/ansible/build-httpd.yml"
