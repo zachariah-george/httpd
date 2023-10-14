@@ -52,7 +52,7 @@ try:
         vs_version = httpd_link['href'].split('-')[-1].split('.')[0][2:]
 
         httpd_file_name = f"httpd-{httpd_version}-win64-{vs_version}.zip"
-        httpd_checksum_link = 'https://www.apachelounge.com/download/'+{vs_version}+'/binaries/'+{httpd_file_name}+'.txt'
+        httpd_checksum_link = f'https://www.apachelounge.com/download/{vs_version}/binaries/{httpd_file_name}.txt'
         httpd_checksum = get_checksum(httpd_checksum_link,httpd_file_name)
 
         print(f"Apache HTTP Server version: {httpd_version}")
