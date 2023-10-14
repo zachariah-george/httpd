@@ -63,6 +63,7 @@ jobs:
       id: vars
       run: |
         echo "::set-output name=version::$(python -c "import yaml;print(yaml.safe_load(open('vars.yml'))['httpd_version'])")"
+        datetime=$(date +"%Y%m%d%H%M%S")
       if: steps.check.outputs.changed == 'true'
 
     - name: Create Release
@@ -72,7 +73,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.vars.outputs.version }}
-        release_name: Release ${{ steps.vars.outputs.version }}
+        release_name: Release ${{ steps.vars.outputs.version }} $datetime
         draft: false
         prerelease: false
       if: steps.check.outputs.changed == 'true'
