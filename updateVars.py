@@ -46,7 +46,7 @@ try:
 
         httpd_link = soup.find('a', href=lambda href: href and 'httpd' in href and href.endswith('.zip'))
         httpd_version = get_version_number(soup, 'httpd')
-        httpd_file_name = "httpd-"+{httpd_version}+"-win64-"+{visual_studio_version}+".zip"
+        httpd_file_name = f"httpd-{httpd_version}-win64-{visual_studio_version}.zip"
         httpd_checksum_link = 'https://www.apachelounge.com/download/'+{visual_studio_version}+'/binaries/'+{httpd_file_name}+'.txt'
         httpd_checksum = get_checksum(httpd_checksum_link,httpd_file_name)
         mod_security_version = get_version_number(soup, 'mod_security')
