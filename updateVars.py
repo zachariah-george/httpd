@@ -21,8 +21,8 @@ def get_checksum(file_url, keyword):
    response = requests.get(file_url, headers=HEADERS, verify=False)
    text = response.text
    print(text) 
-   pattern = re.compile(fr'SHA1-Checksum for: {keyword}:\n([0-9A-Fa-f]+)', re.M)
-   match = pattern.search(text)
+   pattern = r"SHA1-Checksum for: .+:\n([0-9A-F]+)"
+   match = re.search(pattern, text)
    print(match)
    return match.group(1)
 
