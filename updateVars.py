@@ -18,11 +18,13 @@ def get_version_number(soup, keyword):
     return version
 
 def get_checksum(file_url, keyword):
-    response = requests.get(file_url)
-    text = response.text
-    pattern = re.compile(fr'SHA1-Checksum for: {keyword}:\n([0-9A-Fa-f]+)', re.M)
-    match = pattern.search(text)
-    return match.group(1)
+   try:
+    with requests.Session() as session:
+        response = session.get(file_url, headers=HEADERS, verify=False)
+        text = response.text
+        pattern = re.compile(fr'SHA1-Checksum for: {keyword}:\n([0-9A-Fa-f]+)', re.M)
+        match = pattern.search(text)
+        return match.group(1)
 
 
 def update_vars_file(httpd_version, httpd_checksum, mod_security_version, mod_log_rotate_version, crs_version):
