@@ -29,16 +29,16 @@ def calculate_checksum(file_path):
 
 
 def update_vars_file(httpd_version, httpd_checksum, mod_security_version, mod_log_rotate_version, crs_version):
-    # with open(ANSIBLE_VARS_FILE, 'r') as file:
-    #     data = yaml.safe_load(file)
-    #     data['httpd_version'] = httpd_version
-    #     data['httpd_checksum'] = httpd_checksum
-    #     data['mod_security_version'] = mod_security_version
-    #     data['crs_version'] = crs_version
-    #     data['mod_log_rotate_version'] = mod_log_rotate_version
-
-    with open(ANSIBLE_VARS_FILE, 'w') as file:
-        yaml.dump(data, file)
+    with open(ANSIBLE_VARS_FILE, 'r') as file:
+        data = yaml.safe_load(file)
+        data['httpd_version'] = httpd_version
+        data['httpd_checksum'] = httpd_checksum
+        data['mod_security_version'] = mod_security_version
+        data['crs_version'] = crs_version
+        data['mod_log_rotate_version'] = mod_log_rotate_version
+    
+        with open(ANSIBLE_VARS_FILE, 'w') as file:
+            yaml.dump(data, file)
 
 
 try:
