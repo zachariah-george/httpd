@@ -54,8 +54,8 @@ try:
         mod_log_rotate_version = get_version_number(soup, 'mod_log_rotate')
         vs_version = httpd_link['href'].split('-')[-1].split('.')[0][2:]
 
-        httpd_file_name = f"httpd-{httpd_version}-win64-{vs_version}.zip"
-        httpd_file_url = f'https://www.apachelounge.com/download/{vs_version}/binaries/{httpd_file_name}'
+        httpd_file_name = f"httpd-{httpd_version}-win64-VS{vs_version}.zip"
+        httpd_file_url = f'https://www.apachelounge.com/download/VS{vs_version}/binaries/{httpd_file_name}'
         response = session.get(httpd_file_url, headers=HEADERS, verify=False)
         response.raise_for_status()
         httpd_file_path = f"./{httpd_file_name}"
