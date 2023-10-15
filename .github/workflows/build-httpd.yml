@@ -62,8 +62,11 @@ jobs:
     - name: Extract httpd_version from vars.yml
       id: vars
       run: |
-        echo "::set-output name=version::$(python -c "import yaml;print(yaml.safe_load(open('vars.yml'))['httpd_version'])")"
+        # echo "::set-output name=version::$(python -c "import yaml;print(yaml.safe_load(open('vars.yml'))['httpd_version'])")"
+        version=$(python -c "import yaml;print(yaml.safe_load(open('vars.yml'))['httpd_version'])")
         datetime=$(date +"%Y%m%d%H%M%S")
+        version_with_datetime="$version-$datetime"
+        echo "::set-output name=version::${version_with_datetime}"
       if: steps.check.outputs.changed == 'true'
 
     - name: Create Release
