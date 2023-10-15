@@ -1,5 +1,5 @@
 import os
-import re
+import hashlib
 import requests
 import yaml
 from bs4 import BeautifulSoup
