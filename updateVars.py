@@ -58,7 +58,6 @@ try:
         httpd_file_url =f'https://www.apachelounge.com/download/{vs_version}/binaries/{httpd_file_name}'
         response = session.get(httpd_file_url, headers=HEADERS, verify=False)
         response.raise_for_status()
-
         httpd_file_path = f"./{httpd_file_name}"
         with open(httpd_file_path, 'wb') as file:
             file.write(response.content)
@@ -78,7 +77,6 @@ try:
         print("OWASP crs version:", crs_version)
 
         update_vars_file(httpd_version, httpd_checksum, mod_security_version, mod_log_rotate_version, crs_version)
-
         # Not needed with Actions
         # playbook_path = "/home/zacg/ansible/build-httpd.yml"
         # command = f"ansible-playbook {playbook_path} --connection=local --extra-vars '@vars.yml'"
