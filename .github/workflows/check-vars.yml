@@ -1,4 +1,4 @@
-name: Update vars.yml file
+name: check if vars.yml is up-to-date
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   push:
     paths:
       - '**.py'
-#       - '.github/workflows/update-vars.yml'
+#       - '.github/workflows/check-vars.yml'
       - 'vars.yml'
 
 jobs:
@@ -38,20 +38,25 @@ jobs:
 
     - name: Run updateVars.py
       run: python updateVars.py
+    
+    - name: Check if vars.yml has changed
+      id: check_changes
+      run: |
+        if git diff --quiet vars.yml; then
+          echo "No changes in vars.yml"
+          echo "::set-output name=changed::false"
+        else
+          echo "Changes detected in vars.yml"
+          echo "::set-output name=changed::true"
+        fi
 
-    # - name: Commit and push if vars.yml is modified
-    #   run: |
-    #     git diff --exit-code
-    #     git config --global user.email "action@github.com"
-    #     git config --global user.name "GitHub Action"
-    #     git commit -am "Update vars.yml"
-    #     git push
-    - name: Commit and Push changes
+    - name: Commit and Push vars.yml if it has changed
+      if: steps.check_changes.outputs.changed == 'true'
       run: |
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Actions"
-        git add .
-        git commit -m "Update vars.yml and related files"
+        git add vars.yml
+        git commit -m "Update vars.yml"
         git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
