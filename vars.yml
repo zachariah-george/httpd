@@ -14,7 +14,7 @@ httpd_download_url: https://www.apachelounge.com/download/{{ visual_studio_versi
 httpd_extract_dest: ./tmp/httpd
 httpd_rules_dest: '{{ httpd_conf_dir }}/extra/rules/'
 httpd_sites_enabled_dir: '{{ httpd_conf_dir }}/sites-enabled'
-httpd_version: 2.4.45
+httpd_version: 2.4.41
 httpd_checksum: DD227202BFC791077929C80D808200826012668
 mod_log_rotate_download_dest: ./tmp/mod_log_rotate.zip
 mod_log_rotate_download_url: https://www.apachelounge.com/download/{{ visual_studio_version
