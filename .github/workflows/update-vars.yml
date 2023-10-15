@@ -41,8 +41,8 @@ jobs:
 
     - name: Commit and push if vars.yml is modified
       run: |
-        git diff --exit-code || exit 0  # Exit if there are no changes
+        git diff --exit-code
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
-        git commit -am "Update vars.yml" || exit 0
+        git commit -am "Update vars.yml"
         git push
