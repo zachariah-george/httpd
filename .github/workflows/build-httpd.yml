@@ -2,7 +2,7 @@ name: Build updated apache httpd
 
 on:
   workflow_run:
-    workflows: ["Update vars.yml file"]
+    workflows: ["Check if vars.yml is up-to-date"]
     types: 
       - completed
 
