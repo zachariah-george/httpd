@@ -5,12 +5,25 @@ from bs4 import BeautifulSoup
 
 APACHE_LOUNGE_URL = 'https://www.apachelounge.com/download/'
 CRS_REPO_URL = "https://api.github.com/repos/coreruleset/coreruleset/releases/latest"
+OPENSSL_REPO_URL = "https://api.github.com/repos/openssl/openssl/releases/latest"
 ANSIBLE_VARS_FILE = './vars.yml'
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0"
 }
 
-
+def get_latest_release_version(repository_url):
+    try:
+        response = requests.get(repository_url)
+        response.raise_for_status()
+        release_info = response.json()
+        latest_release_name = release_info['name']
+        version = latest_release_name.split()[-1]
+        version = version.lstrip('v')
+        return version
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to fetch the latest release: {e}")
+        return None
+    
 def get_version_number(soup, keyword):
     link = soup.find('a', href=lambda href: href and keyword in href and href.endswith('.zip'))
     version = link['href'].split('-')[1].split('-')[0]
@@ -28,7 +41,7 @@ def calculate_checksum(file_path):
     return sha256_hash.hexdigest()
 
 
-def update_vars_file(httpd_version, httpd_checksum, mod_security_version, mod_log_rotate_version, crs_version):
+def update_vars_file(httpd_version, httpd_checksum, mod_security_version, mod_log_rotate_version, crs_version, openssl_version):
     with open(ANSIBLE_VARS_FILE, 'r') as file:
         data = yaml.safe_load(file)
         data['httpd_version'] = httpd_version
@@ -36,6 +49,7 @@ def update_vars_file(httpd_version, httpd_checksum, mod_security_version, mod_lo
         data['mod_security_version'] = mod_security_version
         data['crs_version'] = crs_version
         data['mod_log_rotate_version'] = mod_log_rotate_version
+        data['openssl_version'] = openssl_version
 
         with open(ANSIBLE_VARS_FILE, 'w') as file:
             yaml.dump(data, file)
@@ -69,14 +83,18 @@ try:
         print(f"ModLogRotate version: {mod_log_rotate_version}")
         print(f"Visual Studio version: {vs_version}")
 
-        response = session.get(CRS_REPO_URL)
-        response.raise_for_status()
-        release_data = response.json()
-        crs_version = release_data['tag_name']
-        crs_version = crs_version.replace('v', '')
+        # response = session.get(CRS_REPO_URL)
+        # response.raise_for_status()
+        # release_data = response.json()
+        # crs_version = release_data['tag_name']
+        # crs_version = crs_version.replace('v', '')
+        crs_version = get_latest_release_version(CRS_REPO_URL)
         print("OWASP crs version:", crs_version)
 
-        update_vars_file(httpd_version, httpd_checksum, mod_security_version, mod_log_rotate_version, crs_version)
+        openssl_version = get_latest_release_version(OPENSSL_REPO_URL)
+        print("OWASP crs version:", openssl_version)
+
+        update_vars_file(httpd_version, httpd_checksum, mod_security_version, mod_log_rotate_version, crs_version, openssl_version)
         # Not needed with Actions
         # playbook_path = "/home/zacg/ansible/build-httpd.yml"
         # command = f"ansible-playbook {playbook_path} --connection=local --extra-vars '@vars.yml'"
