@@ -63,7 +63,7 @@ with requests.Session() as session:
         soup.find('a', href=lambda href: 'httpd' in href and href.endswith('.zip'))['href'].split('-')[-1].split('.')[
             0][2:]
     httpd_file_name = f"httpd-{httpd_version}-win64-VS{vs_version}.zip"
-    httpd_file_url = f'{URLS['apache_lounge']}/VS{vs_version}/binaries/{httpd_file_name}'
+    httpd_file_url = f"{URLS['apache_lounge']}/VS{vs_version}/binaries/{httpd_file_name}"
 
     download_file(httpd_file_url, httpd_file_name)
     httpd_checksum = calculate_checksum(httpd_file_name)
