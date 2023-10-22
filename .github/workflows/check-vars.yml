@@ -6,8 +6,8 @@ on:
   push:
     paths:
       - '**.py'
-#       - '.github/workflows/check-vars.yml'
-      - 'vars.yml'
+      - '.github/workflows/check-vars.yml'
+      # - 'vars.yml'
 
 jobs:
   build:
