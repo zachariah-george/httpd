@@ -3,110 +3,79 @@ import requests
 import yaml
 from bs4 import BeautifulSoup
 
-APACHE_LOUNGE_URL = 'https://www.apachelounge.com/download/'
-CRS_REPO_URL = "https://api.github.com/repos/coreruleset/coreruleset/releases/latest"
-OPENSSL_REPO_URL = "https://api.github.com/repos/openssl/openssl/releases/latest"
+URLS = {
+    'apache_lounge': 'https://www.apachelounge.com/download/',
+    'crs_repo': "https://api.github.com/repos/coreruleset/coreruleset/releases/latest",
+    'openssl_repo': "https://api.github.com/repos/openssl/openssl/releases/latest"
+}
 ANSIBLE_VARS_FILE = './vars.yml'
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0"
 }
 
-def get_latest_release_version(repository_url):
-    try:
-        response = requests.get(repository_url)
-        response.raise_for_status()
-        release_info = response.json()
-        latest_release_name = release_info['name']
-        version = latest_release_name.split()[-1]
-        version = version.lstrip('v')
-        return version
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to fetch the latest release: {e}")
-        return None
-    
-def get_version_number(soup, keyword):
-    link = soup.find('a', href=lambda href: href and keyword in href and href.endswith('.zip'))
-    version = link['href'].split('-')[1].split('-')[0]
-    return version
+
+def get_github_version(url):
+    get_response = requests.get(url)
+    get_response.raise_for_status()
+    return get_response.json()['name'].split()[-1].lstrip('v')
+
+
+def get_lounge_version(soup_ex, keyword):
+    link = soup_ex.find('a', href=lambda href: keyword in href and href.endswith('.zip'))
+    return link['href'].split('-')[1].split('-')[0]
 
 
 def calculate_checksum(file_path):
-    sha256_hash = hashlib.sha256()
     with open(file_path, "rb") as file:
-        while True:
-            data = file.read(65536)  # Read the file in 64KB chunks
-            if not data:
-                break
-            sha256_hash.update(data)
-    return sha256_hash.hexdigest()
+        sha256_hash = hashlib.sha256()
+        for chunk in iter(lambda: file.read(65536), b''):
+            sha256_hash.update(chunk)
+        return sha256_hash.hexdigest()
 
 
-def update_vars_file(httpd_version, httpd_checksum, mod_security_version, mod_log_rotate_version, crs_version, openssl_version):
+def update_vars_file(**kwargs):
     with open(ANSIBLE_VARS_FILE, 'r') as file:
         data = yaml.safe_load(file)
-        data['httpd_version'] = httpd_version
-        data['httpd_checksum'] = httpd_checksum
-        data['mod_security_version'] = mod_security_version
-        data['crs_version'] = crs_version
-        data['mod_log_rotate_version'] = mod_log_rotate_version
-        data['openssl_version'] = openssl_version
+        data.update(kwargs)
 
-        with open(ANSIBLE_VARS_FILE, 'w') as file:
-            yaml.dump(data, file)
+    with open(ANSIBLE_VARS_FILE, 'w') as file:
+        yaml.dump(data, file)
 
 
-try:
-    with requests.Session() as session:
-        response = session.get(APACHE_LOUNGE_URL, headers=HEADERS, verify=False)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, 'html.parser')
+def download_file(url, file_path):
+    get_response = requests.get(url, headers=HEADERS)
+    get_response.raise_for_status()
 
-        httpd_link = soup.find('a', href=lambda href: href and 'httpd' in href and href.endswith('.zip'))
-        httpd_version = get_version_number(soup, 'httpd')
+    with open(file_path, 'wb') as file:
+        file.write(get_response.content)
 
-        mod_security_version = get_version_number(soup, 'mod_security')
-        mod_log_rotate_version = get_version_number(soup, 'mod_log_rotate')
-        vs_version = httpd_link['href'].split('-')[-1].split('.')[0][2:]
 
-        httpd_file_name = f"httpd-{httpd_version}-win64-VS{vs_version}.zip"
-        httpd_file_url = f'https://www.apachelounge.com/download/VS{vs_version}/binaries/{httpd_file_name}'
-        response = session.get(httpd_file_url, headers=HEADERS, verify=False)
-        response.raise_for_status()
-        httpd_file_path = f"./{httpd_file_name}"
-        with open(httpd_file_path, 'wb') as file:
-            file.write(response.content)
-        httpd_checksum = calculate_checksum(httpd_file_path)
+with requests.Session() as session:
+    response = session.get(URLS['apache_lounge'], headers=HEADERS)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.text, 'html.parser')
 
-        print(f"HTTPD Checksum: {httpd_checksum}")
-        print(f"Apache HTTP Server version: {httpd_version}")
-        print(f"ModSecurity version: {mod_security_version}")
-        print(f"ModLogRotate version: {mod_log_rotate_version}")
-        print(f"Visual Studio version: {vs_version}")
+    httpd_version = get_lounge_version(soup, 'httpd')
+    mod_security_version = get_lounge_version(soup, 'mod_security')
+    mod_log_rotate_version = get_lounge_version(soup, 'mod_log_rotate')
 
-        # response = session.get(CRS_REPO_URL)
-        # response.raise_for_status()
-        # release_data = response.json()
-        # crs_version = release_data['tag_name']
-        # crs_version = crs_version.replace('v', '')
-        crs_version = get_latest_release_version(CRS_REPO_URL)
-        print("OWASP crs version:", crs_version)
+    vs_version = \
+        soup.find('a', href=lambda href: 'httpd' in href and href.endswith('.zip'))['href'].split('-')[-1].split('.')[
+            0][2:]
+    httpd_file_name = f"httpd-{httpd_version}-win64-VS{vs_version}.zip"
+    httpd_file_url = f'{URLS['apache_lounge']}/VS{vs_version}/binaries/{httpd_file_name}'
 
-        openssl_version = get_latest_release_version(OPENSSL_REPO_URL)
-        print("OWASP crs version:", openssl_version)
+    download_file(httpd_file_url, httpd_file_name)
+    httpd_checksum = calculate_checksum(httpd_file_name)
 
-        update_vars_file(httpd_version, httpd_checksum, mod_security_version, mod_log_rotate_version, crs_version, openssl_version)
-        # Not needed with Actions
-        # playbook_path = "/home/zacg/ansible/build-httpd.yml"
-        # command = f"ansible-playbook {playbook_path} --connection=local --extra-vars '@vars.yml'"
+    crs_version = get_github_version(URLS['crs_repo'])
+    openssl_version = get_github_version(URLS['openssl_repo'])
 
-        # try:
-        #     exit_code = os.system(command)
-        #     if exit_code == 0:
-        #         print("Ansible playbook executed successfully.")
-        #     else:
-        #         print(f"Error executing Ansible playbook. Exit code: {exit_code}")
-        # except OSError as e:
-        #     print("Error executing Ansible playbook:", e)
-
-except requests.exceptions as e:
-    print("Error", e)
+    update_vars_file(
+        httpd_version=httpd_version,
+        httpd_checksum=httpd_checksum,
+        mod_security_version=mod_security_version,
+        mod_log_rotate_version=mod_log_rotate_version,
+        crs_version=crs_version,
+        openssl_version=openssl_version
+    )
