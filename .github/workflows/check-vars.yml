@@ -14,12 +14,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@latest
+    - name: Checkout repo
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0  # this is required to get the full history and be able to push
+        sparse-checkout: |
+          vars.yml
+          updateVars.py
+          requirements.txt
+          build-httpd.yml
+        sparse-checkout-cone-mode: false
     
     - name: Cache dependencies
-      uses: actions/cache@v3.3.2
+      uses: actions/cache@v3
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
