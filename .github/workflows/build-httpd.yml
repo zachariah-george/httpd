@@ -15,7 +15,7 @@ jobs:
         fetch-depth: 0  # this is required to get the full history and be able to push
 
     - name: Use output from First Workflow
-      run: echo "Value from First Workflow: ${{ needs.check_vars.outputs.vars_changed }}"
+      run: echo "Value from First Workflow:${{ needs.check_vars.outputs.vars_changed }}"
         
     # - name: Check for changes in vars.yml
     #   id: check
