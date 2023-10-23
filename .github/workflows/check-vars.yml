@@ -69,3 +69,5 @@ jobs:
         git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      vars_changed: ${{ steps.set-env.outputs.vars_changed }}
