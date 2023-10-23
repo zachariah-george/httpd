@@ -1,4 +1,4 @@
-name: Check if vars.yml is up-to-date
+name: check_vars
 
 on:
   schedule:
