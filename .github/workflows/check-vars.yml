@@ -57,12 +57,6 @@ jobs:
           echo "Changes detected in vars.yml"
           echo "vars_changed=true" >> $GITHUB_ENV
         fi
-    
-    - name: Save GITHUB_ENV as an artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: github_env
-        path: $GITHUB_ENV
 
     - name: Commit and Push vars.yml if it has changed
       if: ${{ env.vars_changed == 'true' }}
