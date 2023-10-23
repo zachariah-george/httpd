@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: ${{ env.vars_changed == 'true' }}
+    # if: ${{ env.vars_changed == 'true' }}
     
     
 
@@ -17,6 +17,17 @@ jobs:
     - uses: actions/checkout@v4.1.0
       with:
         fetch-depth: 0  # this is required to get the full history and be able to push
+
+    - name: Use vars_changed from First Workflow
+      run: |
+        if [ "$vars_changed" == "true" ]; then
+          echo "Vars.yml has changed in the first workflow."
+          # Add your actions for when vars_changed is true
+        else
+          echo "No changes in vars.yml in the first workflow."
+          # Add your actions for when vars_changed is false
+        # end if statement
+        fi
         
     # - name: Check for changes in vars.yml
     #   id: check
