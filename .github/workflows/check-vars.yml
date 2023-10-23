@@ -7,7 +7,7 @@ on:
     paths:
       - '**.py'
       - '.github/workflows/check-vars.yml'
-      # - 'vars.yml'
+      - 'vars.yml'
 
 jobs:
   build:
