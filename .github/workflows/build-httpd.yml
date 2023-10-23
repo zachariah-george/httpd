@@ -13,14 +13,20 @@ jobs:
     
 
     steps:
-    - name: Get Environment Variables
-      id: get_vars
-      uses: actions/github-script@v4
+    - name: Download GITHUB_ENV artifact
+      uses: actions/download-artifact@v2
       with:
-        script: |
-          var workflowData = github.event.workflow_run;
-          var variables = workflowData.head_workflow.outputs;
-          console.log(variables.vars_changed);
+        name: github_env
+        path: .github_env
+
+    # - name: Get Environment Variables
+    #   id: get_vars
+    #   uses: actions/github-script@v4
+    #   with:
+    #     script: |
+    #       var workflowData = github.event.workflow_run;
+    #       var variables = workflowData.head_workflow.outputs;
+    #       console.log(variables.vars_changed);
             
     - uses: actions/checkout@v4.1.0
       if: ${{ env.vars_changed == 'true' }}
