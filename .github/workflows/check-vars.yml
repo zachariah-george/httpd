@@ -52,15 +52,14 @@ jobs:
       run: |
         if git diff --quiet vars.yml; then
           echo "No changes in vars.yml"
-          echo "VARS_CHANGED=false" >> $HTTPD_ENV
+          echo "::set-output name=vars_changed::false"  # Set the output variable to false
         else
           echo "Changes detected in vars.yml"
-          echo "VARS_CHANGED=true" >> $HTTPD_ENV
+          echo "::set-output name=vars_changed::true"  # Set the output variable to false
         fi
 
     - name: Commit and Push vars.yml if it has changed
-      if: ${{ env.vars_changed == 'true' }}
-      # if: steps.check_changes.outputs.changed == 'true'
+      if: steps.check_changes.outputs.vars_changed == 'true'
       run: |
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Actions"
@@ -69,5 +68,3 @@ jobs:
         git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    outputs:
-      vars_changed: ${{ steps.check_changes.outputs.vars_changed }}
