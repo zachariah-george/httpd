@@ -52,10 +52,10 @@ jobs:
       run: |
         if git diff --quiet vars.yml; then
           echo "No changes in vars.yml"
-          echo "vars_changed=false" >> $GITHUB_ENV
+          echo "VARS_CHANGED=false" >> $HTTPD_ENV
         else
           echo "Changes detected in vars.yml"
-          echo "vars_changed=true" >> $GITHUB_ENV
+          echo "VARS_CHANGED=true" >> $HTTPD_ENV
         fi
 
     - name: Commit and Push vars.yml if it has changed
