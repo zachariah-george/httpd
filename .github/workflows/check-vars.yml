@@ -3,7 +3,7 @@ name: Check if vars.yml is up-to-date
 on:
   schedule:
     # - cron: '0 18 * * *'
-    - cron: '0/5 * * * *'
+    - cron: '*/5 * * * *'
   push:
     paths:
       - '**.py'
