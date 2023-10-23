@@ -14,19 +14,6 @@ jobs:
       with:
         fetch-depth: 0  # this is required to get the full history and be able to push
 
-    - name: Use vars_changed from First Workflow
-      run: |
-        if [ "$vars_changed" == "true" ]; then
-          echo "Vars.yml has changed in the first workflow."
-          # Add your actions for when vars_changed is true
-        else
-          echo "No changes in vars.yml in the first workflow."
-          # Add your actions for when vars_changed is false
-        # end if statement
-        fi
-    - name: Check out code
-      uses: actions/checkout@v2
-
     - name: Use output from First Workflow
       run: echo "Value from First Workflow: ${{ needs.check-vars.outputs.vars_changed }}"
       
