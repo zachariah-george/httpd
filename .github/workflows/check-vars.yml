@@ -70,4 +70,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
-      vars_changed: ${{ steps.set-env.outputs.vars_changed }}
+      vars_changed: ${{ steps.check_changes.outputs.vars_changed }}
