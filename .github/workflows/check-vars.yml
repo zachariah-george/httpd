@@ -69,9 +69,3 @@ jobs:
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Upload vars_status as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: vars_status
-        path: vars_status.txt
