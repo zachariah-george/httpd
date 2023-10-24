@@ -14,15 +14,15 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
       
-    - name: Download vars_changed artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: vars_status
-
     - name: Read vars_status
       id: vars_status
       run: |
-        echo "vars_changed=$(cat vars_status.txt)" >> $GITHUB_ENV
+        if [[ -f vars_status.txt ]]; then
+          vars_changed=$(cat vars_status.txt)
+          echo "vars_changed=$vars_changed" >> $GITHUB_ENV
+        else
+          echo "vars_status.txt not found"
+        fi
         
     # - name: Check for changes in vars.yml
     #   id: check
