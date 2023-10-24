@@ -14,12 +14,12 @@ jobs:
     - name: Download vars_changed artifact
       uses: actions/download-artifact@v3
       with:
-        name: vars_changed
+        name: vars_status
 
-    - name: Read vars_changed value
+    - name: Read vars_status
+      id: vars_status
       run: |
-        vars_changed=$(cat vars_changed.txt)
-        echo "vars_changed: $vars_changed"
+        echo "vars_changed=$(cat vars_status.txt)" >> $GITHUB_ENV
         
     # - name: Check for changes in vars.yml
     #   id: check
