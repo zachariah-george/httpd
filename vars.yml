@@ -28,7 +28,7 @@ mod_security_download_url: https://www.apachelounge.com/download/{{ visual_studi
   }}.zip
 mod_security_extract_dest: ./tmp/mod_security
 mod_security_version: 2.9.7
-openssl_version: 3.1.3
+openssl_version: 3.1.4
 unicode_mapping_dest: '{{ httpd_extract_dest }}/Apache24/conf/extra/unicode.mapping'
 unicode_mapping_url: https://github.com/SpiderLabs/ModSecurity/raw/v3/master/unicode.mapping
 visual_studio_version: VS17
