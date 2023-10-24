@@ -2,12 +2,11 @@ name: Build if update is available
 
 on:
   schedule:
-    # - cron: '0 18 * * *'
     - cron: '*/30 * * * *'
   push:
     paths:
       # - '**.py'
-      # - '.github/workflows/check-vars.yml'
+      # - '.github/workflows/build.yml'
       - 'vars.yml'
 
 jobs:
