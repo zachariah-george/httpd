@@ -73,5 +73,5 @@ jobs:
       if: env.vars_changed == 'true'
       uses: actions/upload-artifact@v2
       with:
-    name: vars_status
-    path: vars_status.txt
+        name: vars_status
+        path: vars_status.txt
