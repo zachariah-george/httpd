@@ -18,7 +18,6 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
       with:
-        # fetch-depth: 0  # this is required to get the full history and be able to push
         sparse-checkout: |
           vars.yml
           updateVars.py
@@ -48,23 +47,29 @@ jobs:
       run: python updateVars.py
     
     - name: Check if vars.yml has changed
-      id: check_changes
       run: |
         if git diff --quiet vars.yml; then
           echo "No changes in vars.yml"
-          echo "::set-output name=vars_changed::false"  # Set the output variable to false
+          echo "false" > vars_changed.txt
         else
           echo "Changes detected in vars.yml"
-          echo "::set-output name=vars_changed::true"  # Set the output variable to false
+          echo "true" > vars_changed.txt
         fi
 
+    - name: Upload vars_changed as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: vars_changed
+        path: vars_changed.txt
+
     - name: Commit and Push vars.yml if it has changed
-      if: steps.check_changes.outputs.vars_changed == 'true'
       run: |
-        git config --global user.email "actions@github.com"
-        git config --global user.name "GitHub Actions"
-        git add vars.yml
-        git commit -m "Auto-update vars.yml"
-        git push
+        if [[ $(cat vars_changed.txt) == 'true' ]]; then
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add vars.yml
+          git commit -m "Auto-update vars.yml"
+          git push
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
