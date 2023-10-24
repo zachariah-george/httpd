@@ -15,63 +15,63 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            vars.yml
-            updateVars.py
-            requirements.txt
-            build-httpd.yml
-          sparse-checkout-cone-mode: false
-      
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.8
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      
-      - name: Run updateVars.py
-        run: python updateVars.py
-      
-      - name: Check if vars.yml has changed
-        id: check_changes
-        run: |
-          if git diff --quiet vars.yml; then
-            echo "No changes in vars.yml"
-            echo "vars_changed=false" >> $GITHUB_ENV
-          else
-            echo "Changes detected in vars.yml"
-            echo "vars_changed=true" >> $GITHUB_ENV
-          fi
-      
-      - name: Commit and Push vars.yml if it has changed
-        if: env.vars_changed == 'true'
-        run: |
-          echo "vars_changed=true" > vars_status.txt
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git add vars.yml
-          git commit -m "Auto-update vars.yml"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Upload vars_status as artifact
-        if: env.vars_changed == 'true'
-        uses: actions/upload-artifact@v2
+    - name: Checkout repo
+      uses: actions/checkout@v4
+      with:
+        sparse-checkout: |
+          vars.yml
+          updateVars.py
+          requirements.txt
+          build-httpd.yml
+        sparse-checkout-cone-mode: false
+    
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run updateVars.py
+      run: python updateVars.py
+    
+    - name: Check if vars.yml has changed
+      id: check_changes
+      run: |
+        if git diff --quiet vars.yml; then
+          echo "No changes in vars.yml"
+          echo "vars_changed=false" >> $GITHUB_ENV
+        else
+          echo "Changes detected in vars.yml"
+          echo "vars_changed=true" >> $GITHUB_ENV
+        fi
+    
+    - name: Commit and Push vars.yml if it has changed
+      if: env.vars_changed == 'true'
+      run: |
+        echo "vars_changed=true" > vars_status.txt
+        git config --global user.email "actions@github.com"
+        git config --global user.name "GitHub Actions"
+        git add vars.yml
+        git commit -m "Auto-update vars.yml"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Upload vars_status as artifact
+      if: env.vars_changed == 'true'
+      uses: actions/upload-artifact@v2
       with:
     name: vars_status
     path: vars_status.txt
