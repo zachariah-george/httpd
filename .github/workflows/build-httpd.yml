@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+      
     - name: Download vars_changed artifact
       uses: actions/download-artifact@v3
       with:
