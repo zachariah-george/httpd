@@ -57,7 +57,7 @@ jobs:
         fi
 
     - name: Upload vars_changed as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: vars_changed
         path: vars_changed.txt
