@@ -3,7 +3,7 @@ name: check_vars
 on:
   schedule:
     # - cron: '0 18 * * *'
-    - cron: '*/5 * * * *'
+    - cron: '*/10 * * * *'
   push:
     paths:
       - '**.py'
