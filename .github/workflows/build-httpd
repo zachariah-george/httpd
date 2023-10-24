@@ -11,16 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Use vars_changed output from check_vars workflow
+    - name: Download vars_changed artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: vars_changed
+
+    - name: Read vars_changed value
       run: |
-        # Get the value of the vars_changed output from the check_vars workflow
-        VARS_CHANGED=$(echo ${{ needs.check_vars.outputs.vars_changed }})
-        
-        if [ "$VARS_CHANGED" == "true" ]; then
-          echo "vars.yml has changed."
-        else
-          echo "vars.yml has not changed."
-        fi
+        vars_changed=$(cat vars_changed.txt)
+        echo "vars_changed: $vars_changed"
         
     # - name: Check for changes in vars.yml
     #   id: check
