@@ -71,7 +71,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Upload vars_status as artifact
-      if: env.vars_changed == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: vars_status
