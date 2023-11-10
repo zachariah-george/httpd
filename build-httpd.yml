@@ -139,21 +139,28 @@
         path: "{{ httpd_conf_dir }}/httpd.conf"
         block: |
           # Enabled modules
-          LoadModule access_compat_module modules/mod_access_compat.so
-          LoadModule access_compat_module modules/mod_log_rotate.so
+          LoadModule headers_module modules/mod_headers.so
+          LoadModule log_debug_module modules/mod_log_debug.so
+          LoadModule log_rotate_module modules/mod_log_rotate.so
+          LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
+          LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+          LoadModule proxy_html_module modules/mod_proxy_html.so
+          LoadModule proxy_http2_module modules/mod_proxy_http2.so
+          LoadModule proxy_http_module modules/mod_proxy_http.so
+          LoadModule proxy_module modules/mod_proxy.so
+          LoadModule rewrite_module modules/mod_rewrite.so
           LoadModule security2_module modules/mod_security2.so
-          LoadModule unique_id_module modules/mod_unique_id.so
           LoadModule socache_shmcb_module modules/mod_socache_shmcb.so
           LoadModule ssl_module modules/mod_ssl.so
-          LoadModule proxy_module modules/mod_proxy.so
-          LoadModule proxy_http_module modules/mod_proxy_http.so
-          LoadModule proxy_http2_module modules/mod_proxy_http2.so
+          LoadModule status_module modules/mod_status.so
+          LoadModule unique_id_module modules/mod_unique_id.so
+          LoadModule watchdog_module modules/mod_watchdog.so
+          LoadModule xml2enc_module modules/mod_xml2enc.so
 
           # Included conf
-          Include conf/extra/modsecurity.conf
-          Include conf/extra/crs-setup.conf
-          Include conf/extra/rules/*.conf
-          # Include conf/extra/httpd-ssl.conf
+          #Include conf/extra/modsecurity.conf
+          #Include conf/extra/crs-setup.conf
+          #Include conf/extra/rules/*.conf
           Include conf/sites-enabled/*.conf
 
           # Enhancements
