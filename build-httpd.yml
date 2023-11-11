@@ -95,7 +95,7 @@
       command: "cp {{ mod_log_rotate_extract_dest }}/mod_log_rotate.so {{ httpd_directory }}/modules/"
 
     - name: Copy openssl bin to Apache bin directory
-      command: "cp {{ openssl_extract_dest }}/bin/* {{ httpd_directory }}/bin/"
+      command: "cp {{ openssl_extract_dest }}/* {{ httpd_directory }}/bin/"
 
     - name: Download unicode.mapping file
       shell: "curl -o {{ unicode_mapping_dest }} {{ unicode_mapping_url }}"
