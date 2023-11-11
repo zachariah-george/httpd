@@ -23,6 +23,7 @@
         - "{{ httpd_extract_dest }}"
         - "{{ mod_security_extract_dest }}"
         - "{{ crs_extract_dest }}"
+        - "{{ openssl_extract_dest }}"
 
     - name: Download Apache HTTP Server
       shell: "curl -LJo {{ httpd_download_dest }} {{ httpd_download_url }}"
