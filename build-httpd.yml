@@ -3,30 +3,6 @@
   hosts: localhost
   gather_facts: false
   vars_files: vars.yml
-  # vars:
-  #     crs_download_dest: "./tmp/coreruleset.zip"
-  #     crs_download_url: "https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ crs_version }}.zip"
-  #     crs_extract_dest: "./tmp/coreruleset"
-  #     crs_rules_dir: "{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/rules/"
-  #     crs_setup_conf_dest: "{{ httpd_conf_dir }}/extra/crs-setup.conf"
-  #     crs_setup_conf_example: "{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/crs-setup.conf.example"
-  #     crs_version: "3.3.4"
-  #     httpd_certs_dir: "{{ httpd_conf_dir }}/certs"
-  #     httpd_conf_dir: "{{ httpd_directory }}/conf"
-  #     httpd_download_dest: "./tmp/httpd.zip"
-  #     httpd_download_url: "https://www.apachelounge.com/download/{{ visual_studio_version }}/binaries/httpd-{{ httpd_version }}-win64-{{ visual_studio_version }}.zip"
-  #     httpd_extract_dest: "./tmp/httpd"
-  #     httpd_rules_dest: "{{ httpd_conf_dir }}/extra/rules/"
-  #     httpd_sites_enabled_dir: "{{ httpd_conf_dir }}/sites-enabled"
-  #     httpd_version: "2.4.57"
-  #     mod_security_download_dest: "./tmp/mod_security.zip"
-  #     mod_security_download_url: "https://www.apachelounge.com/download/{{ visual_studio_version }}/modules/mod_security-{{ mod_security_version }}-win64-{{ visual_studio_version }}.zip"
-  #     mod_security_extract_dest: "./tmp/mod_security"
-  #     mod_security_version: "2.9.7"
-  #     unicode_mapping_dest: "{{ httpd_extract_dest }}/Apache24/conf/extra/unicode.mapping"
-  #     unicode_mapping_url: "https://github.com/SpiderLabs/ModSecurity/raw/v3/master/unicode.mapping"
-  #     visual_studio_version: "VS17"
-
   tasks:
     - name: Install required packages
       become: true
@@ -44,8 +20,6 @@
         state: directory
       loop:
         - "{{ httpd_download_dest | dirname }}"
-        # - "{{ mod_security_download_dest | dirname }}"
-        # - "{{ crs_download_dest | dirname }}"
         - "{{ httpd_extract_dest }}"
         - "{{ mod_security_extract_dest }}"
         - "{{ crs_extract_dest }}"
@@ -73,6 +47,12 @@
 
     - name: Extract coreruleset archive
       command: "unzip -o {{ crs_download_dest }} -d {{ crs_extract_dest }}"
+
+    - name: Download openssl archive
+      shell: "curl -LJo {{ openssl_download_dest }} {{ openssl_download_url }}"
+
+    - name: Extract openssl archive
+      command: "unzip -o {{ openssl_download_dest }} -d {{ openssl_extract_dest }}"
 
     - name: Find ApacheXX path
       find:
@@ -106,6 +86,9 @@
     - name: Copy mod_log_rotate.so to Apache modules directory
       command: "cp {{ mod_log_rotate_extract_dest }}/mod_log_rotate.so {{ httpd_directory }}/modules/"
 
+    - name: Copy openssl bin to Apache bin directory
+      command: "cp {{ openssl_extract_dest }}/bin/* {{ httpd_directory }}/bin/"
+
     - name: Download unicode.mapping file
       shell: "curl -o {{ unicode_mapping_dest }} {{ unicode_mapping_url }}"
 
@@ -134,137 +117,155 @@
         src: "{{ mod_security_extract_dest }}/mod_security-{{ mod_security_version }}/mod_security/modsecurity.conf-recommended"
         dest: "{{ httpd_conf_dir }}/extra/modsecurity.conf"
 
-    - name: Append lines to httpd.conf
-      blockinfile:
+    - name: Create extra.conf file
+      copy:
+        content: "{{ lookup('file', './extra.conf') }}"
+        dest: "{{ httpd_conf_dir }}/extra.conf"
+    
+    - name: Include extra.conf in httpd.conf
+      lineinfile:
         path: "{{ httpd_conf_dir }}/httpd.conf"
-        block: |
-          # Enabled modules
-          LoadModule headers_module modules/mod_headers.so
-          LoadModule log_debug_module modules/mod_log_debug.so
-          LoadModule log_rotate_module modules/mod_log_rotate.so
-          LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
-          LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
-          LoadModule proxy_html_module modules/mod_proxy_html.so
-          LoadModule proxy_http2_module modules/mod_proxy_http2.so
-          LoadModule proxy_http_module modules/mod_proxy_http.so
-          LoadModule proxy_module modules/mod_proxy.so
-          LoadModule rewrite_module modules/mod_rewrite.so
-          LoadModule security2_module modules/mod_security2.so
-          LoadModule socache_shmcb_module modules/mod_socache_shmcb.so
-          LoadModule ssl_module modules/mod_ssl.so
-          LoadModule status_module modules/mod_status.so
-          LoadModule unique_id_module modules/mod_unique_id.so
-          LoadModule watchdog_module modules/mod_watchdog.so
-          LoadModule xml2enc_module modules/mod_xml2enc.so
+        line: "# Include additional configurations from extra.conf"
+        insertafter: BOF
+    
+    - name: Include extra.conf in httpd.conf
+      lineinfile:
+        path: "{{ httpd_conf_dir }}/httpd.conf"
+        line: "Include conf/extra.conf"
+        insertafter: "# Include additional configurations from extra.conf"
 
-          # Included conf
-          #Include conf/extra/modsecurity.conf
-          #Include conf/extra/crs-setup.conf
-          #Include conf/extra/rules/*.conf
-          Include conf/sites-enabled/*.conf
 
-          # Enhancements
-          # ServerName 127.0.0.1
+    # - name: Append lines to httpd.conf
+    #   blockinfile:
+    #     path: "{{ httpd_conf_dir }}/httpd.conf"
+    #     block: |
+    #       # Enabled modules
+    #       LoadModule headers_module modules/mod_headers.so
+    #       LoadModule log_debug_module modules/mod_log_debug.so
+    #       LoadModule log_rotate_module modules/mod_log_rotate.so
+    #       LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
+    #       LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+    #       LoadModule proxy_html_module modules/mod_proxy_html.so
+    #       LoadModule proxy_http2_module modules/mod_proxy_http2.so
+    #       LoadModule proxy_http_module modules/mod_proxy_http.so
+    #       LoadModule proxy_module modules/mod_proxy.so
+    #       LoadModule rewrite_module modules/mod_rewrite.so
+    #       LoadModule security2_module modules/mod_security2.so
+    #       LoadModule socache_shmcb_module modules/mod_socache_shmcb.so
+    #       LoadModule ssl_module modules/mod_ssl.so
+    #       LoadModule status_module modules/mod_status.so
+    #       LoadModule unique_id_module modules/mod_unique_id.so
+    #       LoadModule watchdog_module modules/mod_watchdog.so
+    #       LoadModule xml2enc_module modules/mod_xml2enc.so
 
-          <Location "/console">
-          Deny from  all
-          </Location>
-          
-          # Disable TRACE HTTP method to enhance security
-          TraceEnable Off
-          
-          # Set the server timeout to 150 seconds for client connections
-          Timeout 150
-          
-          # Disable ETags for files to improve caching efficiency
-          FileETag None
-          
-          # Turn off server signature (server version information) in response headers
-          ServerSignature Off
-          
-          # Set the server tokens to 'Prod' to minimize the amount of information
-          # revealed about the server software in response headers
-          ServerTokens Prod
-          
-          # Enable HTTP Strict Transport Security (HSTS) for secure connections
-          # This header tells browsers to only use HTTPS for the specified duration
-          # and includes subdomains and preloading for added security
-          Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-          
-          # Modify Set-Cookie headers to enhance security:
-          # - HttpOnly: Ensure cookies are only accessible via HTTP, not JavaScript
-          # - Secure: Send cookies only over HTTPS connections
-          # - SameSite=Strict: Strict enforcement of same-site cookie policy
-          Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure;SameSite=Strict
-          
-          # Set the X-Content-Type-Options header to nosniff
-          # This prevents browsers from interpreting files as a different MIME type
-          Header set X-Content-Type-Options nosniff
+    #       # Included conf
+    #       #Include conf/extra/modsecurity.conf
+    #       #Include conf/extra/crs-setup.conf
+    #       #Include conf/extra/rules/*.conf
+    #       Include conf/sites-enabled/*.conf
 
-          # Open Ports
-          Listen 443
+    #       # Enhancements
+    #       # ServerName 127.0.0.1
+
+    #       <Location "/console">
+    #       Deny from  all
+    #       </Location>
           
-          # SSLCipherSuite ALL:!ECDHE-RSA-AES256-SHA:!DHE-RSA-AES256-SHA:!DHE-RSA-CAMELLIA256-SHA:!ECDHE-RSA-AES128-SHA:!DHE-RSA-AES128-SHA:!DHE-RSA-CAMELLIA128-SHA:!AES256-SHA:!CAMELLIA256-SHA:!AES128-SHA:!CAMELLIA128-SHA:!ECDHE-RSA-AES256-SHA384:!DHE-RSA-AES256-SHA256:!ECDHE-RSA-CAMELLIA256-SHA384:!DHE-RSA-CAMELLIA256-SHA256:!ECDHE-RSA-AES128-SHA256:!DHE-RSA-AES128-SHA256:!ECDHE-RSA-CAMELLIA128-SHA256:!DHE-RSA-CAMELLIA128-SHA256:!AES256-GCM-SHA384:!AES256-CCM8:!AES256-CCM:!ARIA256-GCM-SHA384:!AES128-GCM-SHA256:!AES128-CCM8:!AES128-CCM:!ARIA128-GCM-SHA256:!AES256-SHA256:!CAMELLIA256-SHA256:!AES128-SHA256:!CAMELLIA128-SHA256 
-          # SSLProxyCipherSuite ALL:!ECDHE-RSA-AES256-SHA:!DHE-RSA-AES256-SHA:!DHE-RSA-CAMELLIA256-SHA:!ECDHE-RSA-AES128-SHA:!DHE-RSA-AES128-SHA:!DHE-RSA-CAMELLIA128-SHA:!AES256-SHA:!CAMELLIA256-SHA:!AES128-SHA:!CAMELLIA128-SHA:!ECDHE-RSA-AES256-SHA384:!DHE-RSA-AES256-SHA256:!ECDHE-RSA-CAMELLIA256-SHA384:!DHE-RSA-CAMELLIA256-SHA256:!ECDHE-RSA-AES128-SHA256:!DHE-RSA-AES128-SHA256:!ECDHE-RSA-CAMELLIA128-SHA256:!DHE-RSA-CAMELLIA128-SHA256:!AES256-GCM-SHA384:!AES256-CCM8:!AES256-CCM:!ARIA256-GCM-SHA384:!AES128-GCM-SHA256:!AES128-CCM8:!AES128-CCM:!ARIA128-GCM-SHA256:!AES256-SHA256:!CAMELLIA256-SHA256:!AES128-SHA256:!CAMELLIA128-SHA256 
+    #       # Disable TRACE HTTP method to enhance security
+    #       TraceEnable Off
           
-          SSLCipherSuite HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK:!SRP:!CAMELLIA:!ARIA
-          SSLProxyCipherSuite HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK:!SRP:!CAMELLIA:!ARIA
-
-          #   User agents such as web browsers are not configured for the user's
-          #   own preference of either security or performance, therefore this
-          #   must be the prerogative of the web server administrator who manages
-          #   cpu load versus confidentiality, so enforce the server's cipher order.
-          SSLHonorCipherOrder on
-
-          SSLRandomSeed startup builtin
-          SSLRandomSeed connect builtin
-
-          #   SSL Protocol support:
-          #   List the protocol versions which clients are allowed to connect with.
-          #   Disable SSLv3 by default (cf. RFC 7525 3.1.1).  TLSv1 (1.0) should be
-          #   disabled as quickly as practical.  By the end of 2016, only the TLSv1.2
-          #   protocol or later should remain in use.
-          SSLProtocol -all +TLSv1.2 +TLSv1.3
-          SSLProxyProtocol -all +TLSv1.2 +TLSv1.3
-
-          #   Inter-Process Session Cache:
-          #   Configure the SSL Session Cache: First the mechanism 
-          #   to use and second the expiring timeout (in seconds).
-          SSLSessionCache        "shmcb:${SRVROOT}/logs/ssl_scache(512000)"
-          SSLSessionCacheTimeout  300
-
-          # Disable the preservation of the original host header when proxying requests
-          # Apache will use its own hostname instead of passing the client's hostname to the proxied server
-          # Applicable for Master Apache
-          # ProxyPreserveHost Off
+    #       # Set the server timeout to 150 seconds for client connections
+    #       Timeout 150
           
-          # Disable SSL certificate verification for the proxied requests
-          # Acceptable for internal network configurations but not be secure for public-facing services
-          SSLProxyVerify none
+    #       # Disable ETags for files to improve caching efficiency
+    #       FileETag None
           
-          # Disable checking the peer certificate name for SSL/TLS connections
-          # Acceptable for internal network configurations but not be secure for public-facing service
-          SSLProxyCheckPeerName Off
+    #       # Turn off server signature (server version information) in response headers
+    #       ServerSignature Off
           
-          # Disable proxy request handling
-          ProxyRequests Off
+    #       # Set the server tokens to 'Prod' to minimize the amount of information
+    #       # revealed about the server software in response headers
+    #       ServerTokens Prod
+          
+    #       # Enable HTTP Strict Transport Security (HSTS) for secure connections
+    #       # This header tells browsers to only use HTTPS for the specified duration
+    #       # and includes subdomains and preloading for added security
+    #       Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+          
+    #       # Modify Set-Cookie headers to enhance security:
+    #       # - HttpOnly: Ensure cookies are only accessible via HTTP, not JavaScript
+    #       # - Secure: Send cookies only over HTTPS connections
+    #       # - SameSite=Strict: Strict enforcement of same-site cookie policy
+    #       Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure;SameSite=Strict
+          
+    #       # Set the X-Content-Type-Options header to nosniff
+    #       # This prevents browsers from interpreting files as a different MIME type
+    #       Header set X-Content-Type-Options nosniff
 
-          # To bypass the modsec rule which checks that the host header is not an IP address
-          SecRule REQUEST_HEADERS:Host "@rx ^[\d.:]+$" \
-            "id:998,\
-            phase:2,\
-            nolog,\
-            pass,\
-            ctl:ruleRemoveById=920350"
+    #       # Open Ports
+    #       Listen 443
+          
+    #       # SSLCipherSuite ALL:!ECDHE-RSA-AES256-SHA:!DHE-RSA-AES256-SHA:!DHE-RSA-CAMELLIA256-SHA:!ECDHE-RSA-AES128-SHA:!DHE-RSA-AES128-SHA:!DHE-RSA-CAMELLIA128-SHA:!AES256-SHA:!CAMELLIA256-SHA:!AES128-SHA:!CAMELLIA128-SHA:!ECDHE-RSA-AES256-SHA384:!DHE-RSA-AES256-SHA256:!ECDHE-RSA-CAMELLIA256-SHA384:!DHE-RSA-CAMELLIA256-SHA256:!ECDHE-RSA-AES128-SHA256:!DHE-RSA-AES128-SHA256:!ECDHE-RSA-CAMELLIA128-SHA256:!DHE-RSA-CAMELLIA128-SHA256:!AES256-GCM-SHA384:!AES256-CCM8:!AES256-CCM:!ARIA256-GCM-SHA384:!AES128-GCM-SHA256:!AES128-CCM8:!AES128-CCM:!ARIA128-GCM-SHA256:!AES256-SHA256:!CAMELLIA256-SHA256:!AES128-SHA256:!CAMELLIA128-SHA256 
+    #       # SSLProxyCipherSuite ALL:!ECDHE-RSA-AES256-SHA:!DHE-RSA-AES256-SHA:!DHE-RSA-CAMELLIA256-SHA:!ECDHE-RSA-AES128-SHA:!DHE-RSA-AES128-SHA:!DHE-RSA-CAMELLIA128-SHA:!AES256-SHA:!CAMELLIA256-SHA:!AES128-SHA:!CAMELLIA128-SHA:!ECDHE-RSA-AES256-SHA384:!DHE-RSA-AES256-SHA256:!ECDHE-RSA-CAMELLIA256-SHA384:!DHE-RSA-CAMELLIA256-SHA256:!ECDHE-RSA-AES128-SHA256:!DHE-RSA-AES128-SHA256:!ECDHE-RSA-CAMELLIA128-SHA256:!DHE-RSA-CAMELLIA128-SHA256:!AES256-GCM-SHA384:!AES256-CCM8:!AES256-CCM:!ARIA256-GCM-SHA384:!AES128-GCM-SHA256:!AES128-CCM8:!AES128-CCM:!ARIA128-GCM-SHA256:!AES256-SHA256:!CAMELLIA256-SHA256:!AES128-SHA256:!CAMELLIA128-SHA256 
+          
+    #       SSLCipherSuite HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK:!SRP:!CAMELLIA:!ARIA
+    #       SSLProxyCipherSuite HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK:!SRP:!CAMELLIA:!ARIA
 
-          # To bypass the modsec rule which checks for SQL injection, when password is a argument in the request
-          # Temporary fix till SQL injection is fixed in the application
-          SecRule ARGS_NAMES "@streq password" \
-            "id:999,\
-            phase:2,\
-            nolog,\
-            pass,\
-            ctl:ruleRemoveById=942100"
+    #       #   User agents such as web browsers are not configured for the user's
+    #       #   own preference of either security or performance, therefore this
+    #       #   must be the prerogative of the web server administrator who manages
+    #       #   cpu load versus confidentiality, so enforce the server's cipher order.
+    #       SSLHonorCipherOrder on
+
+    #       SSLRandomSeed startup builtin
+    #       SSLRandomSeed connect builtin
+
+    #       #   SSL Protocol support:
+    #       #   List the protocol versions which clients are allowed to connect with.
+    #       #   Disable SSLv3 by default (cf. RFC 7525 3.1.1).  TLSv1 (1.0) should be
+    #       #   disabled as quickly as practical.  By the end of 2016, only the TLSv1.2
+    #       #   protocol or later should remain in use.
+    #       SSLProtocol -all +TLSv1.2 +TLSv1.3
+    #       SSLProxyProtocol -all +TLSv1.2 +TLSv1.3
+
+    #       #   Inter-Process Session Cache:
+    #       #   Configure the SSL Session Cache: First the mechanism 
+    #       #   to use and second the expiring timeout (in seconds).
+    #       SSLSessionCache        "shmcb:${SRVROOT}/logs/ssl_scache(512000)"
+    #       SSLSessionCacheTimeout  300
+
+    #       # Disable the preservation of the original host header when proxying requests
+    #       # Apache will use its own hostname instead of passing the client's hostname to the proxied server
+    #       # Applicable for Master Apache
+    #       # ProxyPreserveHost Off
+          
+    #       # Disable SSL certificate verification for the proxied requests
+    #       # Acceptable for internal network configurations but not be secure for public-facing services
+    #       SSLProxyVerify none
+          
+    #       # Disable checking the peer certificate name for SSL/TLS connections
+    #       # Acceptable for internal network configurations but not be secure for public-facing service
+    #       SSLProxyCheckPeerName Off
+          
+    #       # Disable proxy request handling
+    #       ProxyRequests Off
+
+    #       # To bypass the modsec rule which checks that the host header is not an IP address
+    #       SecRule REQUEST_HEADERS:Host "@rx ^[\d.:]+$" \
+    #         "id:998,\
+    #         phase:2,\
+    #         nolog,\
+    #         pass,\
+    #         ctl:ruleRemoveById=920350"
+
+    #       # To bypass the modsec rule which checks for SQL injection, when password is a argument in the request
+    #       # Temporary fix till SQL injection is fixed in the application
+    #       SecRule ARGS_NAMES "@streq password" \
+    #         "id:999,\
+    #         phase:2,\
+    #         nolog,\
+    #         pass,\
+    #         ctl:ruleRemoveById=942100"
 
     - name: Update SecRuleEngine in modsecurity.conf
       lineinfile:
