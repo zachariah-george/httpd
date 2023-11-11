@@ -54,6 +54,13 @@
 
     - name: Extract openssl archive
       command: "unzip -o {{ openssl_download_dest }} -d {{ openssl_extract_dest }}"
+    
+    - name: Show contents of OpenSSL bin directory
+      command: "ls -l {{ openssl_extract_dest }}"
+    
+    # - name: Show contents of OpenSSL bin directory
+    #   command: "ls -l {{ openssl_extract_dest }}/"
+
 
     - name: Find ApacheXX path
       find:
