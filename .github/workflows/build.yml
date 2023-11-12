@@ -23,6 +23,7 @@ jobs:
           updateVars.py
           requirements.txt
           build-httpd.yml
+          custom.conf
         sparse-checkout-cone-mode: false
     
     - name: Cache dependencies
