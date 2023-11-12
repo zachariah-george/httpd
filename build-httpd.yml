@@ -148,7 +148,7 @@
 
     - name: Create custom.conf file
       copy:
-        content: ./custom.conf'
+        src: ./custom.conf
         dest: "{{ httpd_conf_dir }}/custom.conf"
     
     - name: Include custom.conf in httpd.conf
