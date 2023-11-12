@@ -160,7 +160,7 @@
     - name: Include custom.conf in httpd.conf
       lineinfile:
         path: "{{ httpd_conf_dir }}/httpd.conf"
-        line: "Include conf/extra.conf"
+        line: "Include conf/custom.conf"
         insertafter: "# Include additional configurations from custom.conf"
 
     - name: Update SecRuleEngine in modsecurity.conf
