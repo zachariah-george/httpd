@@ -155,7 +155,7 @@
       lineinfile:
         path: "{{ httpd_conf_dir }}/httpd.conf"
         line: "# Include additional configurations from custom.conf"
-        insertafter: BOF
+        insertafter: EOF
     
     - name: Include custom.conf in httpd.conf
       lineinfile:
