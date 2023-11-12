@@ -8,6 +8,7 @@ on:
       # - '**.py'
       # - '.github/workflows/build.yml'
       - 'vars.yml'
+      - 'custom.conf'
 
 jobs:
   build:
