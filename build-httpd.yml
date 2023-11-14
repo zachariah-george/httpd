@@ -199,38 +199,6 @@
         regexp: '^(SecAuditLog\s+)/var/log/modsec_audit.log'
         replace: '\1logs/modsec_audit.log'
 
-    # - name: Update SSLCipherSuite in httpd-ssl.conf
-    #   replace:
-    #     path: "{{ httpd_conf_dir }}/extra/httpd-ssl.conf"
-    #     regexp: '^(SSLCipherSuite\s+)HIGH:MEDIUM:!MD5:!RC4:!3DES'
-    #     replace: '\1HIGH:!MEDIUM:!MD5:!RC4:!3DES'
-
-    # - name: Update SSLProxyCipherSuite in httpd-ssl.conf
-    #   replace:
-    #     path: "{{ httpd_conf_dir }}/extra/httpd-ssl.conf"
-    #     regexp: '^(SSLProxyCipherSuite\s+)HIGH:MEDIUM:!MD5:!RC4:!3DES'
-    #     replace: '\1HIGH:!MEDIUM:!MD5:!RC4:!3DES'
-
-    # - name: Update SSLProtocol in httpd-ssl.conf
-    #   replace:
-    #     path: "{{ httpd_conf_dir }}/extra/httpd-ssl.conf"
-    #     regexp: '^(SSLProtocol\s+)all -SSLv3'
-    #     replace: '\1-all +TLSv1.2 +TLSv1.3'
-
-    # - name: Update SSLProxyProtocol in httpd-ssl.conf
-    #   replace:
-    #     path: "{{ httpd_conf_dir }}/extra/httpd-ssl.conf"
-    #     regexp: '^(SSLProxyProtocol\s+)all -SSLv3'
-    #     replace: '\1-all +TLSv1.2 +TLSv1.3'
-
-    # - name: Generate SSL certificate and key for example.com defined in httpd-ssl.conf
-    #   command: >
-    #     openssl req -x509 -newkey rsa:4096 -nodes
-    #     -subj "/CN=localhost"
-    #     -addext "subjectAltName = DNS:example.com,DNS:www.example.com"
-    #     -keyout "{{ httpd_conf_dir }}/server.key"
-    #     -out "{{ httpd_conf_dir }}/server.crt"
-
     - name: Create dummy-site.com.conf
       copy:
         content: |
@@ -298,17 +266,17 @@
     - name: Generate SSL certificate and key
       command: >
         openssl req -x509 -newkey rsa:4096 -nodes
-        -subj "/CN=dummy-site"
+        -subj "/CN=dummy-site.com"
         -addext "subjectAltName = DNS:www.dummy-site.com"
         -keyout "{{ httpd_conf_dir }}/certs/dummy-site.com/server.key"
         -out "{{ httpd_conf_dir }}/certs/dummy-site.com/server.crt"
 
-    - name: Get current date
-      set_fact:
-        current_date: "{{ lookup('pipe', 'date +%Y-%m-%d') }}"
-    - name: Create Archive
-      archive:
-        path: "{{ httpd_extract_dest }}"
-        dest: "./tmp/httpd_{{current_date}}.zip"
-        format: zip
+    # - name: Get current date
+    #   set_fact:
+    #     current_date: "{{ lookup('pipe', 'date +%Y-%m-%d') }}"
+    # - name: Create Archive
+    #   archive:
+    #     path: "{{ httpd_extract_dest }}"
+    #     dest: "./tmp/httpd_{{current_date}}.zip"
+    #     format: zip
 
