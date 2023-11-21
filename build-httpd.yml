@@ -198,64 +198,69 @@
         path: "{{ httpd_conf_dir }}/extra/modsecurity.conf"
         regexp: '^(SecAuditLog\s+)/var/log/modsec_audit.log'
         replace: '\1logs/modsec_audit.log'
-
-    - name: Create dummy-site.com.conf
+    
+    - name: Copy dummy-site.com.conf file
       copy:
-        content: |
-          # This is a sample conf file. Use it as a template and adapt it to your use case.
-          # You can disable this conf file be renaming it to dummy-site.com.conf.disabled
-          # The httpd server will only read conf files with the extension .conf
-          
-          # _default will match all requests which does not specify a FQDN
-          <VirtualHost _default_:443>
-          
-          # VirtualHost can also be defined as follows:
-          # <VirtualHost 192.168.0.1:443>
-          # or as,
-          # <VirtualHost dummy-site.com:443>
-          
-          # We are defining SRVNAME with our desired FQDN
-          # If we have to change the FQDN we only have to change it here
-          Define SRVNAME "dummy-site.com"
-          
-          # One can also use IP address instead of FQDN for ServerName and ServerAlias
-          ServerName "${SRVNAME}"
-          ServerAlias "www.${SRVNAME} www.api-${SRVNAME}"
-          ServerAdmin "admin@${SRVNAME}"
-          ErrorLog "logs/${SRVNAME}-error.log"
-          TransferLog "logs/${SRVNAME}-access.log"
-          
-          # Enable/Disable SSL for this virtual host.
-          SSLEngine on
-          
-          # SSL Certificate & Key 
-          SSLCertificateFile "${SRVROOT}/conf/certs/${SRVNAME}/server.crt"
-          SSLCertificateKeyFile "${SRVROOT}/conf/certs/${SRVNAME}/server.key"
-          
-          # Proxying via http ip/FQDN:port
-          ProxyPass / http://localhost:7001/
-          ProxyPassReverse / http://localhost:7001/
-          
-          # Proxying via https using FQDN
-          # SSLProxyEngine on
-          # ProxyPass / https://localhost:7002/
-          # ProxyPassReverse / https://localhost:7002/
-          
-          # If you want to proxy a sub-path to a different backend other than what you have defined for the root path (/),
-          # do the following
-          # In the following directive, the declared ServerName and ServerAlias holds true
-          # <Location "/ecsservice">
-          #     # SSL Certificate for /ecsservice
-          #     SSLEngine on
-          #     SSLCertificateFile /path/to/api_certificate.crt
-          #     SSLCertificateKeyFile /path/to/api_private_key.key
-          
-          #     ProxyPass http://localhost:3001/
-          #     ProxyPassReverse http://localhost:3001/
-          # </Location>
-          </VirtualHost>
+        src: ./dummy-site.com.conf
+        dest: "{{ httpd_conf_dir }}/sites-enabled/dummy-site.com.conf.disabled"
 
-        dest: "{{ httpd_conf_dir }}/sites-enabled/dummy-site.com.conf"
+    # - name: Create dummy-site.com.conf
+    #   copy:
+    #     content: |
+    #       # This is a sample conf file. Use it as a template and adapt it to your use case.
+    #       # You can disable this conf file be renaming it to dummy-site.com.conf.disabled
+    #       # The httpd server will only read conf files with the extension .conf
+          
+    #       # _default will match all requests which does not specify a FQDN
+    #       <VirtualHost _default_:443>
+          
+    #       # VirtualHost can also be defined as follows:
+    #       # <VirtualHost 192.168.0.1:443>
+    #       # or as,
+    #       # <VirtualHost dummy-site.com:443>
+          
+    #       # We are defining SRVNAME with our desired FQDN
+    #       # If we have to change the FQDN we only have to change it here
+    #       Define SRVNAME "dummy-site.com"
+          
+    #       # One can also use IP address instead of FQDN for ServerName and ServerAlias
+    #       ServerName "${SRVNAME}"
+    #       ServerAlias "www.${SRVNAME} www.api-${SRVNAME}"
+    #       ServerAdmin "admin@${SRVNAME}"
+    #       ErrorLog "logs/${SRVNAME}-error.log"
+    #       TransferLog "logs/${SRVNAME}-access.log"
+          
+    #       # Enable/Disable SSL for this virtual host.
+    #       SSLEngine on
+          
+    #       # SSL Certificate & Key 
+    #       SSLCertificateFile "${SRVROOT}/conf/certs/${SRVNAME}/server.crt"
+    #       SSLCertificateKeyFile "${SRVROOT}/conf/certs/${SRVNAME}/server.key"
+          
+    #       # Proxying via http ip/FQDN:port
+    #       ProxyPass / http://localhost:7001/
+    #       ProxyPassReverse / http://localhost:7001/
+          
+    #       # Proxying via https using FQDN
+    #       # SSLProxyEngine on
+    #       # ProxyPass / https://localhost:7002/
+    #       # ProxyPassReverse / https://localhost:7002/
+          
+    #       # If you want to proxy a sub-path to a different backend other than what you have defined for the root path (/),
+    #       # do the following
+    #       # In the following directive, the declared ServerName and ServerAlias holds true
+    #       # <Location "/ecsservice">
+    #       #     # SSL Certificate for /ecsservice
+    #       #     SSLEngine on
+    #       #     SSLCertificateFile /path/to/api_certificate.crt
+    #       #     SSLCertificateKeyFile /path/to/api_private_key.key
+          
+    #       #     ProxyPass http://localhost:3001/
+    #       #     ProxyPassReverse http://localhost:3001/
+    #       # </Location>
+    #       </VirtualHost>
+
+    #     dest: "{{ httpd_conf_dir }}/sites-enabled/dummy-site.com.conf"
 
     - name: Create directory
       file:
