@@ -24,6 +24,7 @@ jobs:
           requirements.txt
           build-httpd.yml
           custom.conf
+          dummy-site.com.conf
         sparse-checkout-cone-mode: false
     
     - name: Cache dependencies
