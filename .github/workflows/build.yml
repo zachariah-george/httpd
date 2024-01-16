@@ -2,7 +2,7 @@ name: Build if update is available
 
 on:
   schedule:
-    - cron: '0 */2 * * *'
+    - cron: '0 */6 * * *'
   push:
     paths:
       # - '**.py'
