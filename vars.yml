@@ -11,7 +11,7 @@ httpd_checksum: c7b7d9361862e57c1919ecd07e26e3491c667c16fe53a29d775ebec5a30b0d16
 httpd_conf_dir: '{{ httpd_directory }}/conf'
 httpd_download_dest: ./tmp/httpd.zip
 httpd_download_url: https://www.apachelounge.com/download/{{ visual_studio_version
-  }}/binaries/httpd-{{ httpd_version }}-win64-{{ visual_studio_version }}.zip
+  }}/binaries/httpd-{{ httpd_version }}-240404-win64-{{ visual_studio_version }}.zip
 httpd_extract_dest: ./tmp/httpd
 httpd_rules_dest: '{{ httpd_conf_dir }}/extra/rules/'
 httpd_sites_enabled_dir: '{{ httpd_conf_dir }}/sites-enabled'
