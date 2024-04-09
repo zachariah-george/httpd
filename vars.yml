@@ -26,8 +26,7 @@ mod_log_rotate_extract_dest: ./tmp/mod_log_rotate
 mod_log_rotate_version: 1.0.2-win64
 mod_security_download_dest: ./tmp/mod_security.zip
 mod_security_download_url: https://www.apachelounge.com/download/{{ visual_studio_version
-  }}/modules/mod_security-{{ mod_security_version }}-{{ visual_studio_version
-  }}.zip
+  }}/modules/mod_security-{{ mod_security_version }}-{{ visual_studio_version }}.zip
 mod_security_extract_dest: ./tmp/mod_security
 mod_security_version: 2.9.7-win64
 openssl_download_dest: ./tmp/openssl.zip
