@@ -59,8 +59,12 @@ with requests.Session() as session:
     soup = BeautifulSoup(response.text, 'html.parser')
 
     httpd_version_date = get_lounge_version(soup, 'httpd')
-    mod_security_version = get_lounge_version(soup, 'mod_security')
-    mod_log_rotate_version = get_lounge_version(soup, 'mod_log_rotate')
+    # mod_security_version = get_lounge_version(soup, 'mod_security')
+    # mod_log_rotate_version = get_lounge_version(soup, 'mod_log_rotate')
+    mod_security_version = get_lounge_version(soup, 'mod_security').split('-')[0]
+    mod_log_rotate_version = get_lounge_version(soup, 'mod_log_rotate').split('-')[0]
+
+
 
     vs_version = soup.find('a', href=lambda href: 'httpd' in href and href.endswith('.zip'))['href'].split('-')[-1].split('.')[0][2:]
     httpd_file_name = f"httpd-{httpd_version_date}-win64-VS{vs_version}.zip"
