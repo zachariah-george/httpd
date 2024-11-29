@@ -5,7 +5,7 @@ crs_extract_dest: ./tmp/coreruleset
 crs_rules_dir: '{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/rules/'
 crs_setup_conf_dest: '{{ httpd_conf_dir }}/extra/crs-setup.conf'
 crs_setup_conf_example: '{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/crs-setup.conf.example'
-crs_version: 4.8.0
+crs_version: 4.9.0
 httpd_build_date: '240904'
 httpd_certs_dir: '{{ httpd_conf_dir }}/certs'
 httpd_checksum: 3b7c5e6bd9886c3282b0e8ae4a1165419b35b1a392ab4f5258cd8d9b6a04863c
