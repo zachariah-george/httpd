@@ -5,10 +5,10 @@ crs_extract_dest: ./tmp/coreruleset
 crs_rules_dir: '{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/rules/'
 crs_setup_conf_dest: '{{ httpd_conf_dir }}/extra/crs-setup.conf'
 crs_setup_conf_example: '{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/crs-setup.conf.example'
-crs_version: 4.11.0
-httpd_build_date: '250122'
+crs_version: 4.13.0
+httpd_build_date: '250207'
 httpd_certs_dir: '{{ httpd_conf_dir }}/certs'
-httpd_checksum: 9576ccec4d69dbe36df7fd50f8d21cdaedb6ad24ac2d64798c688612f361a380
+httpd_checksum: 6079370fae645537033e2ae30088176e7b0259436ed19814fe23e8eb178620fd
 httpd_conf_dir: '{{ httpd_directory }}/conf'
 httpd_download_dest: ./tmp/httpd.zip
 httpd_download_url: https://www.apachelounge.com/download/{{ visual_studio_version
@@ -17,7 +17,7 @@ httpd_download_url: https://www.apachelounge.com/download/{{ visual_studio_versi
 httpd_extract_dest: ./tmp/httpd
 httpd_rules_dest: '{{ httpd_conf_dir }}/extra/rules/'
 httpd_sites_enabled_dir: '{{ httpd_conf_dir }}/sites-enabled'
-httpd_version: 2.4.62
+httpd_version: 2.4.63
 mod_log_rotate_download_dest: ./tmp/mod_log_rotate.zip
 mod_log_rotate_download_url: https://www.apachelounge.com/download/{{ visual_studio_version
   }}/modules/mod_log_rotate-{{ mod_log_rotate_version }}-win64-{{ visual_studio_version
@@ -34,7 +34,7 @@ openssl_download_dest: ./tmp/openssl.zip
 openssl_download_url: https://github.com/zachariah-george/openssl/releases/download/openssl-{{
   openssl_version }}/openssl.zip
 openssl_extract_dest: ./tmp/openssl
-openssl_version: 3.4.0
+openssl_version: 3.4.1
 unicode_mapping_dest: '{{ httpd_extract_dest }}/Apache24/conf/extra/unicode.mapping'
 unicode_mapping_url: https://github.com/SpiderLabs/ModSecurity/raw/v3/master/unicode.mapping
 visual_studio_version: VS17
