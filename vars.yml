@@ -29,7 +29,7 @@ mod_security_download_url: https://www.apachelounge.com/download/{{ visual_studi
   }}/modules/mod_security-{{ mod_security_version }}-win64-{{ visual_studio_version
   }}.zip
 mod_security_extract_dest: ./tmp/mod_security
-mod_security_version: 2.9.8
+mod_security_version: 2.9.11
 openssl_download_dest: ./tmp/openssl.zip
 openssl_download_url: https://github.com/zachariah-george/openssl/releases/download/openssl-{{
   openssl_version }}/openssl.zip
