@@ -6,9 +6,9 @@ crs_rules_dir: '{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/rules/'
 crs_setup_conf_dest: '{{ httpd_conf_dir }}/extra/crs-setup.conf'
 crs_setup_conf_example: '{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/crs-setup.conf.example'
 crs_version: 4.22.0
-httpd_build_date: '251206'
+httpd_build_date: '260107'
 httpd_certs_dir: '{{ httpd_conf_dir }}/certs'
-httpd_checksum: 7d2fc2273a0b55a8e025b692b44b953a4eb18464a8d8a809832a5d01643ec76c
+httpd_checksum: f081cd274177ed0fd330217e47fa4bec7bc431c31a838867fc164eeec46ae1b2
 httpd_conf_dir: '{{ httpd_directory }}/conf'
 httpd_download_dest: ./tmp/httpd.zip
 httpd_download_url: https://www.apachelounge.com/download/{{ visual_studio_version
@@ -29,7 +29,7 @@ mod_security_download_url: https://www.apachelounge.com/download/{{ visual_studi
   }}/modules/mod_security-{{ mod_security_version }}-win64-{{ visual_studio_version
   }}.zip
 mod_security_extract_dest: ./tmp/mod_security
-mod_security_version: 2.9.11
+mod_security_version: 2.9.12
 openssl_download_dest: ./tmp/openssl.zip
 openssl_download_url: https://github.com/zachariah-george/openssl/releases/download/openssl-{{
   openssl_version }}/openssl.zip
