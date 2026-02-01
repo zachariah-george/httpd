@@ -6,9 +6,9 @@ crs_rules_dir: '{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/rules/'
 crs_setup_conf_dest: '{{ httpd_conf_dir }}/extra/crs-setup.conf'
 crs_setup_conf_example: '{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/crs-setup.conf.example'
 crs_version: 4.22.0
-httpd_build_date: '260107'
+httpd_build_date: '260131'
 httpd_certs_dir: '{{ httpd_conf_dir }}/certs'
-httpd_checksum: f081cd274177ed0fd330217e47fa4bec7bc431c31a838867fc164eeec46ae1b2
+httpd_checksum: 3154e43551cc74873d2c565ff401b413256ff5fba1c5627238fe7e68086cdb36
 httpd_conf_dir: '{{ httpd_directory }}/conf'
 httpd_download_dest: ./tmp/httpd.zip
 httpd_download_url: https://www.apachelounge.com/download/{{ visual_studio_version
