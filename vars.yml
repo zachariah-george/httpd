@@ -6,9 +6,9 @@ crs_rules_dir: '{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/rules/'
 crs_setup_conf_dest: '{{ httpd_conf_dir }}/extra/crs-setup.conf'
 crs_setup_conf_example: '{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/crs-setup.conf.example'
 crs_version: 4.26.0
-httpd_build_date: '260223'
+httpd_build_date: '260504'
 httpd_certs_dir: '{{ httpd_conf_dir }}/certs'
-httpd_checksum: 422d311b9903d3bd39d3144ab558af3ce822826e7b68e2a9d01ec0854f6a920b
+httpd_checksum: 21321337126b70f9b5be0327e7ddc5b9c91947f4ee35e9abf9c7c1154c7d0472
 httpd_conf_dir: '{{ httpd_directory }}/conf'
 httpd_download_dest: ./tmp/httpd.zip
 httpd_download_url: https://www.apachelounge.com/download/{{ visual_studio_version
@@ -17,7 +17,7 @@ httpd_download_url: https://www.apachelounge.com/download/{{ visual_studio_versi
 httpd_extract_dest: ./tmp/httpd
 httpd_rules_dest: '{{ httpd_conf_dir }}/extra/rules/'
 httpd_sites_enabled_dir: '{{ httpd_conf_dir }}/sites-enabled'
-httpd_version: 2.4.66
+httpd_version: 2.4.67
 mod_log_rotate_download_dest: ./tmp/mod_log_rotate.zip
 mod_log_rotate_download_url: https://www.apachelounge.com/download/{{ visual_studio_version
   }}/modules/mod_log_rotate-{{ mod_log_rotate_version }}-win64-{{ visual_studio_version
