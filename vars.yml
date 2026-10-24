@@ -8,7 +8,7 @@ crs_setup_conf_example: '{{ crs_extract_dest }}/coreruleset-{{ crs_version }}/cr
 crs_version: 4.30.0
 httpd_build_date: '261002'
 httpd_certs_dir: '{{ httpd_conf_dir }}/certs'
-httpd_checksum: 9f1f93cab9a0c6dc5e628aa640784bb30347f93fcd01b46a4c0d6b5ba76bf4e2
+httpd_checksum: 77d715d0d9cee731e2251e7ddc2090a7a8e6d41fedef2e9827cd918593c5a652
 httpd_conf_dir: '{{ httpd_directory }}/conf'
 httpd_download_dest: ./tmp/httpd.zip
 httpd_download_url: https://www.apachelounge.com/download/{{ visual_studio_version
